@@ -1,0 +1,31 @@
+.chat-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 65%;
+  height: 80vh;
+  padding-bottom: 60px;
+  background-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 5px 0 gray;
+}
+
+.message-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  overflow-y: scroll;
+}
+
+@media screen and (min-width: 1280px) {
+  .chat-container {
+    width: 60%;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .chat-container {
+    width: 50%;
+  }
+}
