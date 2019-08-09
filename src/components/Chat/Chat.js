@@ -2,6 +2,8 @@ import React, { Component } from "react";
 
 import Message from "../Message/";
 import Input from "../Input";
+import store from '../../store';
+import sendMessage from '../../actions';
 
 const URL = "ws://st-chat.shas.tel";
 
@@ -31,7 +33,7 @@ class Chat extends Component {
     this.webSocket.onmessage = e => {
       const recivedData = JSON.parse(e.data);
 
-      this.setState(state => ({messages: [...recivedData, ...state.messages]}));
+      store.dispatch(sendMessage(recivedData));
     };
 
     this.webSocket.onclose = () => {
@@ -51,17 +53,19 @@ class Chat extends Component {
     this.webSocket.send(
       JSON.stringify({ from: this.state.name, message: message })
     );
-
-    this.setState(state => ({messages: [...state.messages]}));
   }
 
   render() {
-    const reversedMessages = [...this.state.messages].reverse();
+    store.subscribe(() => {
+      const messages = store.getState().reverse();
+
+      this.setState({ messages: messages });
+    })
 
     return (
       <div className="chat-container">
         <ul className="message-container">
-          {reversedMessages.map(answer => {
+          {this.state.messages.map(answer => {
             const { from, time, id, message } = answer;
             return (
               <Message key={id} name={from} time={time} message={message} />
