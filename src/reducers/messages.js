@@ -16,6 +16,8 @@ function sendMessages(state = [], action) {
   switch (action.type) {
     case SEND_MESSAGE:
       return [...state, action.message];
+    case REQUEST_MESSAGES:
+      return [];
     default:
       return state;
   }

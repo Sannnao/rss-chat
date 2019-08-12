@@ -36,6 +36,8 @@ class Chat extends Component {
         JSON.parse(this.ls.getItem('offMessages'));
 
       this.ls.removeItem('offMessages');
+      this.props.requestMessages();
+      console.log(this.props.offlineMessages);
 
       if (offlineMessages) {
         for (let i = 0; i < offlineMessages.length; i++) {
