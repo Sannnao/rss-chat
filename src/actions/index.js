@@ -32,6 +32,18 @@ export function getMessages() {
     ws.addEventListener('message', e => {
       const messages = JSON.parse(e.data).reverse();
 
+      if (document.hidden) {
+        const notifyOptions = {
+          body: `${messages[messages.length - 1].message}`,
+          silent: true,
+        };
+
+        const notifyMessage = new Notification(
+          `${messages[messages.length - 1].from}:`,
+          notifyOptions
+        );
+      }
+
       dispatch({ type: RECEIVE_MESSAGES, messages });
     });
   };

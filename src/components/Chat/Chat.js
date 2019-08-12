@@ -28,8 +28,6 @@ class Chat extends Component {
 
     this.state.ws.addEventListener('open', () => {
       console.log('open');
-      // const { offlineMessages } = this.props;
-      // const copyOfflineMessages = [...offlineMessages];
     });
 
     this.state.ws.addEventListener('close', () => {
@@ -51,6 +49,8 @@ class Chat extends Component {
       this.props.sendMessage(this.state.name, message);
     }
   }
+
+
 
   render() {
     const { messages } = this.props;
