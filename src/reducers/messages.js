@@ -1,11 +1,8 @@
+import { combineReducers } from 'redux';
 import { REQUEST_MESSAGES, RECEIVE_MESSAGES, SEND_MESSAGE } from '../actions/';
 
-const initialState = [];
-
-export function messages(state = initialState, action) {
+function receiveMessages(state = [], action) {
   switch (action.type) {
-    case SEND_MESSAGE:
-      return [...state, action.message];
     case REQUEST_MESSAGES:
       return state;
     case RECEIVE_MESSAGES:
@@ -14,3 +11,19 @@ export function messages(state = initialState, action) {
       return state;
   }
 }
+
+function sendMessages(state = [], action) {
+  switch (action.type) {
+    case SEND_MESSAGE:
+      return [...state, action.message];
+    default:
+      return state;
+  }
+}
+
+const messages = combineReducers({
+  receiveMessages,
+  sendMessages,
+})
+
+export default messages

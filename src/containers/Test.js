@@ -2,9 +2,11 @@ import { connect } from 'react-redux';
 import { sendMessage, getMessages } from '../actions/index';
 import Chat from '../components/Chat';
 
-const mapStateToProps = (messages) => {
-  console.log(messages);
-  return { messages: [...messages] };
+const mapStateToProps = ({ receiveMessages, sendMessages }) => {
+  console.log(receiveMessages, sendMessages);
+  return { 
+    messages: [...receiveMessages],
+    offlineMessages: [...sendMessages] };
 };
 
 const mapDispatchToProps = dispatch => {

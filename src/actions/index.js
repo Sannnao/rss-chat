@@ -1,3 +1,5 @@
+import ReconnectingWebSocket from 'reconnecting-websocket';
+
 export const REQUEST_MESSAGES = 'REQUEST_MESSAGES';
 export const RECEIVE_MESSAGES = 'RECEIVE_MESSAGES';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
@@ -10,11 +12,14 @@ export function requestMessages() {
 
 export function sendMessage(name, message) {
   return function(dispatch) {
-    // const ws = new WebSocket(URL);
+    const ws = new ReconnectingWebSocket(URL);
 
-    // ws.addEventListener('open', () => {
-      
-    // });
+    // if (ws.readyState === 1) {
+    //   ws.send(JSON.stringify({ from: name, message: message }));
+    // } else if (ws.readyState === 3)  {
+    //   dispatch({ type: SEND_MESSAGE, message });
+    // }
+    ws.close();
 
     dispatch({ type: SEND_MESSAGE, message });
   };
@@ -22,9 +27,8 @@ export function sendMessage(name, message) {
 
 export function getMessages() {
   return function(dispatch) {
-    const ws = new WebSocket(URL);
+    const ws = new ReconnectingWebSocket(URL);
 
-    console.log('got messages');
     ws.addEventListener('message', e => {
       const messages = JSON.parse(e.data).reverse();
 
