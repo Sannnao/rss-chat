@@ -12,7 +12,7 @@ export function requestMessages() {
 
 export function sendMessage(name, message) {
   return function(dispatch) {
-    const ws = new ReconnectingWebSocket(URL);
+    const ws = new ReconnectingWebSocket(URL, null, {minReconnectionDelay: 10000});
 
     // if (ws.readyState === 1) {
     //   ws.send(JSON.stringify({ from: name, message: message }));
@@ -27,7 +27,7 @@ export function sendMessage(name, message) {
 
 export function getMessages() {
   return function(dispatch) {
-    const ws = new ReconnectingWebSocket(URL);
+    const ws = new ReconnectingWebSocket(URL, null, {minReconnectionDelay: 10000});
 
     ws.addEventListener('message', e => {
       const messages = JSON.parse(e.data).reverse();

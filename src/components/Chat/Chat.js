@@ -12,12 +12,14 @@ class Chat extends Component {
   constructor(props) {
     super(props);
 
+    this.ls = window.localStorage;
+
     this.state = {
-      name: 'unknown',
+      name: 'Cool guy',
       message: '',
       messages: [],
       copyName: '',
-      ws: new ReconnectingWebSocket(URL),
+      ws: new ReconnectingWebSocket(URL, null, { minReconnectionDelay: 9000 }),
     };
 
     this.sendMessage = this.sendMessage.bind(this);
@@ -28,11 +30,29 @@ class Chat extends Component {
 
     this.state.ws.addEventListener('open', () => {
       console.log('open');
+
+      const offlineMessages = this.props.offlineMessages.length ?
+        this.props.offlineMessages :
+        JSON.parse(this.ls.getItem('offMessages'));
+
+      this.ls.removeItem('offMessages');
+
+      if (offlineMessages) {
+        for (let i = 0; i < offlineMessages.length; i++) {
+          setTimeout(() => {
+            this.state.ws.send(JSON.stringify({ from: this.state.name, message: offlineMessages[i] }));
+          }, 2000)
+        }
+      }
     });
 
     this.state.ws.addEventListener('close', () => {
       console.log('Socket is closed. Reconnect will be attempted in 5 second.');
     });
+
+    window.onbeforeunload = () => {
+      this.ls.setItem('offMessages', JSON.stringify(this.props.offlineMessages));
+    }
   }
 
   componentDidUpdate() {
