@@ -11,7 +11,7 @@ const Message = props => {
         <h2 className="message-name">{name}</h2>
         <p className="message-time">{messageTime}</p>
       </div>
-      <p>{message}</p>
+      <p className="message">{message}</p>
     </li>
   );
 };

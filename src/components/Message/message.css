@@ -24,3 +24,8 @@
 .message-time {
   color: gray;
 }
+
+.message {
+  margin: 5px 0; 
+  word-wrap: break-word;
+}
