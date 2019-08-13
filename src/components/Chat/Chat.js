@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import Message from '../Message/';
 import Input from '../Input';
+import Login from '../Login';
 
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
@@ -15,14 +16,14 @@ class Chat extends Component {
     this.ls = window.localStorage;
 
     this.state = {
-      name: 'Cool guy',
+      name: 'unknown monkey',
       message: '',
       messages: [],
-      copyName: '',
       ws: new ReconnectingWebSocket(URL, null, { minReconnectionDelay: 9000 }),
     };
 
     this.sendMessage = this.sendMessage.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -31,9 +32,9 @@ class Chat extends Component {
     this.state.ws.addEventListener('open', () => {
       console.log('open');
 
-      const offlineMessages = this.props.offlineMessages.length ?
-        this.props.offlineMessages :
-        JSON.parse(this.ls.getItem('offMessages'));
+      const offlineMessages = this.props.offlineMessages.length
+        ? this.props.offlineMessages
+        : JSON.parse(this.ls.getItem('offMessages'));
 
       this.ls.removeItem('offMessages');
       this.props.requestMessages();
@@ -42,8 +43,13 @@ class Chat extends Component {
       if (offlineMessages) {
         for (let i = 0; i < offlineMessages.length; i++) {
           setTimeout(() => {
-            this.state.ws.send(JSON.stringify({ from: this.state.name, message: offlineMessages[i] }));
-          }, 2000)
+            this.state.ws.send(
+              JSON.stringify({
+                from: this.state.name,
+                message: offlineMessages[i],
+              })
+            );
+          }, 2000);
         }
       }
     });
@@ -53,8 +59,13 @@ class Chat extends Component {
     });
 
     window.onbeforeunload = () => {
-      this.ls.setItem('offMessages', JSON.stringify(this.props.offlineMessages));
-    }
+      this.ls.setItem(
+        'offMessages',
+        JSON.stringify(this.props.offlineMessages)
+      );
+    };
+
+    this.setState({ name: this.ls.getItem('nickname') });
   }
 
   componentDidUpdate() {
@@ -72,13 +83,18 @@ class Chat extends Component {
     }
   }
 
+  handleSubmit(name) {
+    this.ls.setItem('nickname', name);
 
+    this.setState({ name: this.ls.getItem('nickname') });
+  }
 
   render() {
     const { messages } = this.props;
 
     return (
       <div className="chat-container">
+        <Login handleSubmit={this.handleSubmit} />
         <ul className="message-container">
           {messages.map(answer => {
             const { from, time, id, message } = answer;
