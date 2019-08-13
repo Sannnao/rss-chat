@@ -4,7 +4,7 @@ export const REQUEST_MESSAGES = 'REQUEST_MESSAGES';
 export const RECEIVE_MESSAGES = 'RECEIVE_MESSAGES';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
 
-const URL = 'ws://st-chat.shas.tel';
+const URL = 'wss://wssproxy.herokuapp.com/';
 
 export function requestMessages() {
   return { type: REQUEST_MESSAGES };

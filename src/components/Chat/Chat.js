@@ -7,7 +7,7 @@ import Login from '../Login';
 
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
-const URL = 'ws://st-chat.shas.tel';
+const URL = 'wss://wssproxy.herokuapp.com/';
 
 class Chat extends Component {
   constructor(props) {
