@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 import Message from '../Message/';
 import Input from '../Input';
@@ -13,13 +12,14 @@ class Chat extends Component {
   constructor(props) {
     super(props);
 
+    this.ws = new ReconnectingWebSocket(URL, null, {
+      minReconnectionDelay: 5000,
+    });
     this.ls = window.localStorage;
 
     this.state = {
       name: 'unknown monkey',
-      message: '',
-      messages: [],
-      ws: new ReconnectingWebSocket(URL, null, { minReconnectionDelay: 9000 }),
+      offline: true,
     };
 
     this.sendMessage = this.sendMessage.bind(this);
@@ -29,7 +29,7 @@ class Chat extends Component {
   componentDidMount() {
     this.props.receiveMessages();
 
-    this.state.ws.addEventListener('open', () => {
+    this.ws.addEventListener('open', () => {
       console.log('open');
 
       const offlineMessages = this.props.offlineMessages.length
@@ -37,13 +37,13 @@ class Chat extends Component {
         : JSON.parse(this.ls.getItem('offMessages'));
 
       this.ls.removeItem('offMessages');
-      this.props.requestMessages();
+      this.props.clearOfflineMessages();
       console.log(this.props.offlineMessages);
 
       if (offlineMessages) {
         for (let i = 0; i < offlineMessages.length; i++) {
           setTimeout(() => {
-            this.state.ws.send(
+            this.ws.send(
               JSON.stringify({
                 from: this.state.name,
                 message: offlineMessages[i],
@@ -52,10 +52,13 @@ class Chat extends Component {
           }, 2000);
         }
       }
+
+      this.setState({ offline: false });
     });
 
-    this.state.ws.addEventListener('close', () => {
+    this.ws.addEventListener('close', () => {
       console.log('Socket is closed. Reconnect will be attempted soon...');
+      this.setState({ offline: true });
     });
 
     window.onbeforeunload = () => {
@@ -74,12 +77,10 @@ class Chat extends Component {
   }
 
   sendMessage(message) {
-    if (this.state.ws.readyState === 1) {
-      this.state.ws.send(
-        JSON.stringify({ from: this.state.name, message: message })
-      );
-    } else if (this.state.ws.readyState === 3) {
-      this.props.sendMessage(this.state.name, message);
+    if (this.ws.readyState === 1) {
+      this.ws.send(JSON.stringify({ from: this.state.name, message: message }));
+    } else if (this.ws.readyState === 3) {
+      this.props.sendMessage(message);
     }
   }
 
@@ -93,26 +94,29 @@ class Chat extends Component {
     const { messages } = this.props;
 
     return (
-      <div className="chat-container">
+      <div
+        style={this.state.offline ? { opacity: '0.8' } : { opacity: '1' }}
+        className="chat-container"
+      >
         <Login handleSubmit={this.handleSubmit} />
         <ul className="message-container">
           {messages.map(answer => {
             const { from, time, id, message } = answer;
             return (
-              <Message key={id} name={from} time={time} message={message} />
+              <Message
+                isYourMessage={from === this.state.name}
+                key={id}
+                name={from}
+                time={time}
+                message={message}
+              />
             );
           })}
         </ul>
-        <Input sendMessage={this.sendMessage} />
+        <Input offline={this.state.offline} sendMessage={this.sendMessage} />
       </div>
     );
   }
 }
-
-Chat.propTypes = {
-  messages: PropTypes.array.isRequired,
-  sendMessage: PropTypes.func.isRequired,
-  getMessages: PropTypes.func.isRequired,
-};
 
 export default Chat;

@@ -1,27 +1,18 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
-export const REQUEST_MESSAGES = 'REQUEST_MESSAGES';
+export const CLEAR_OFFLINE_MESSAGES = 'CLEAR_OFFLINE_MESSAGES';
 export const RECEIVE_MESSAGES = 'RECEIVE_MESSAGES';
 export const RECEIVE_MESSAGE = 'RECEIVE_MESSAGE';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
 
 const URL = 'wss://wssproxy.herokuapp.com/';
 
-export function requestMessages() {
-  return { type: REQUEST_MESSAGES };
+export function clearOfflineMessages() {
+  return { type: CLEAR_OFFLINE_MESSAGES };
 }
 
-export function sendMessage(name, message) {
+export function sendMessage(message) {
   return function(dispatch) {
-    const ws = new ReconnectingWebSocket(URL, null, {
-      minReconnectionDelay: 10000,
-    });
-
-    // if (ws.readyState === 1) {
-    //   ws.send(JSON.stringify({ from: name, message: message }));
-    // } else if (ws.readyState === 3)  {
-    //   dispatch({ type: SEND_MESSAGE, message });
-    // }
     console.log('off');
 
     dispatch({ type: SEND_MESSAGE, message });
@@ -31,7 +22,7 @@ export function sendMessage(name, message) {
 export function receiveMessages() {
   return function(dispatch) {
     const ws = new ReconnectingWebSocket(URL, null, {
-      minReconnectionDelay: 10000,
+      minReconnectionDelay: 5000,
     });
 
     ws.addEventListener('message', e => {
@@ -44,20 +35,21 @@ export function receiveMessages() {
       } else {
         const message = receivedData;
 
-        if (document.hidden) {
-          const name = message[0].from;
-          const messageContent = message[0].message;
+        Notification.requestPermission(permission => {
+          if (permission === 'granted') {
+            if (document.hidden) {
+              const name = message[0].from;
+              const messageContent = message[0].message;
 
-          const notifyOptions = {
-            body: `${name}`,
-            silent: true,
-          };
+              const notifyOptions = {
+                body: `${name}`,
+                silent: true,
+              };
 
-          const notifyMessage = new Notification(
-            `${messageContent}:`,
-            notifyOptions
-          );
-        }
+              new Notification(`${messageContent}:`, notifyOptions);
+            }
+          }
+        });
 
         dispatch({ type: RECEIVE_MESSAGE, message });
       }

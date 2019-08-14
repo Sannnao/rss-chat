@@ -1,14 +1,22 @@
-import React from "react";
+import React from 'react';
 
 const Message = props => {
-  const { applyUser, time, name, message } = props;
+  const { time, name, message, isYourMessage } = props;
 
-  const messageTime = new Date(time).toISOString().split('T')[1].split('.')[0];
+  const messageTime = new Date(time)
+    .toISOString()
+    .split('T')[1]
+    .split('.')[0];
 
   return (
-    <li className="message-wrap">
+    <li
+      style={
+        isYourMessage ? { alignSelf: 'flex-end' } : { alignSelf: 'flex-start' }
+      }
+      className="message-wrap"
+    >
       <div className="message-header">
-        <h2 onClick={applyUser} className="message-name">{name}</h2>
+        <h2 className="message-name">{name}</h2>
         <p className="message-time">{messageTime}</p>
       </div>
       <p className="message">{message}</p>

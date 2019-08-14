@@ -1,5 +1,7 @@
 import React from 'react';
 
+const keyCodeEnter = 13;
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -18,15 +20,17 @@ class Login extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
+    if (!this.state.input) return;
 
     this.props.handleSubmit(this.state.input);
-    this.setState({input: ''});
+    this.setState({ input: '' });
   }
 
   render() {
     return (
       <form className="login-container" onSubmit={this.handleSubmit}>
         <input
+          onKeyPress={e => e.keyCode === keyCodeEnter && this.handleSubmit}
           className="login-input"
           onChange={this.handleLogin}
           value={this.state.input}

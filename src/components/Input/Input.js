@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+const keyCodeEnter = 13;
+
 class Input extends Component {
   constructor(props) {
     super(props);
@@ -28,11 +30,13 @@ class Input extends Component {
     return (
       <form onSubmit={this.handleSubmit} className="input-container">
         <input
-          onKeyPress={(e) => e.keyCode === 13 && this.handleSubmit}
+          onKeyPress={(e) => e.keyCode === keyCodeEnter && this.handleSubmit}
           className="input-field"
           onChange={this.handleInput}
           value={this.state.input}
-          placeholder="Enter a message..."
+          placeholder={this.props.offline 
+            ? "Chat is offline but you can send messages..."
+            : "Enter a message..."}
         />
         <button className="submit-button" type="submit">Send</button>
       </form>
