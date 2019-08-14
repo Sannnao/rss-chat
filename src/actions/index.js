@@ -2,6 +2,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 
 export const REQUEST_MESSAGES = 'REQUEST_MESSAGES';
 export const RECEIVE_MESSAGES = 'RECEIVE_MESSAGES';
+export const RECEIVE_MESSAGE = 'RECEIVE_MESSAGE';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
 
 const URL = 'wss://wssproxy.herokuapp.com/';
@@ -27,28 +28,39 @@ export function sendMessage(name, message) {
   };
 }
 
-export function getMessages() {
+export function receiveMessages() {
   return function(dispatch) {
     const ws = new ReconnectingWebSocket(URL, null, {
       minReconnectionDelay: 10000,
     });
 
     ws.addEventListener('message', e => {
-      const messages = JSON.parse(e.data).reverse();
+      const receivedData = JSON.parse(e.data);
 
-      if (document.hidden) {
-        const notifyOptions = {
-          body: `${messages[messages.length - 1].message}`,
-          silent: true,
-        };
+      if (receivedData.length !== 1) {
+        const messages = receivedData.reverse();
 
-        const notifyMessage = new Notification(
-          `${messages[messages.length - 1].from}:`,
-          notifyOptions
-        );
+        dispatch({ type: RECEIVE_MESSAGES, messages });
+      } else {
+        const message = receivedData;
+
+        if (document.hidden) {
+          const name = message[0].from;
+          const messageContent = message[0].message;
+
+          const notifyOptions = {
+            body: `${name}`,
+            silent: true,
+          };
+
+          const notifyMessage = new Notification(
+            `${messageContent}:`,
+            notifyOptions
+          );
+        }
+
+        dispatch({ type: RECEIVE_MESSAGE, message });
       }
-
-      dispatch({ type: RECEIVE_MESSAGES, messages });
     });
   };
 }

@@ -17,6 +17,8 @@
 }
 
 .message-name {
+  width: 70%;
+  word-wrap: break-word;
   font-size: 18px;
   font-weight: 600;
 }

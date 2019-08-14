@@ -27,7 +27,7 @@ class Chat extends Component {
   }
 
   componentDidMount() {
-    this.props.getMessages();
+    this.props.receiveMessages();
 
     this.state.ws.addEventListener('open', () => {
       console.log('open');
@@ -55,7 +55,7 @@ class Chat extends Component {
     });
 
     this.state.ws.addEventListener('close', () => {
-      console.log('Socket is closed. Reconnect will be attempted in 5 second.');
+      console.log('Socket is closed. Reconnect will be attempted soon...');
     });
 
     window.onbeforeunload = () => {
