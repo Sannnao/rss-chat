@@ -1,13 +1,13 @@
 import React from 'react';
 import './App.css';
 
-import Test from './containers/Test';
+import ChatContainer from './containers/ChatContainer';
 
 class App extends React.Component {
   render() {
     return (
       <div className="app-container">
-        <Test />
+        <ChatContainer />
       </div>
     );
   }

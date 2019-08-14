@@ -17,9 +17,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-const Test = connect(
+const ChatContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Chat);
 
-export default Test;
+export default ChatContainer;
