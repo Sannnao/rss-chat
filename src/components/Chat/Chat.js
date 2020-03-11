@@ -23,36 +23,16 @@ class Chat extends Component {
     };
 
     this.sendMessage = this.sendMessage.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
   }
 
   componentDidMount() {
     this.props.receiveMessages();
 
     this.ws.addEventListener('open', () => {
+      this.handleOfflineMessages();
+
       console.log('open');
-
-      const offlineMessages = this.props.offlineMessages.length
-        ? this.props.offlineMessages
-        : JSON.parse(this.ls.getItem('offMessages'));
-
-      this.ls.removeItem('offMessages');
-      this.props.clearOfflineMessages();
-      console.log(this.props.offlineMessages);
-
-      if (offlineMessages) {
-        for (let i = 0; i < offlineMessages.length; i++) {
-          setTimeout(() => {
-            this.ws.send(
-              JSON.stringify({
-                from: this.state.name,
-                message: offlineMessages[i],
-              })
-            );
-          }, 2000);
-        }
-      }
-
       this.setState({ offline: false });
     });
 
@@ -68,10 +48,39 @@ class Chat extends Component {
       );
     };
 
-    this.setState({ name: this.ls.getItem('nickname') });
+    if (this.ls.getItem('nickname')) {
+      this.setState({ name: this.ls.getItem('nickname') });
+    }
   }
 
   componentDidUpdate() {
+    this.scrollToBottom();
+  }
+
+  handleOfflineMessages() {
+    const offlineMessages = this.props.offlineMessages.length
+      ? this.props.offlineMessages
+      : JSON.parse(this.ls.getItem('offMessages'));
+
+    this.ls.removeItem('offMessages');
+    this.props.clearOfflineMessages();
+    console.log(this.props.offlineMessages);
+
+    if (offlineMessages) {
+      for (let i = 0; i < offlineMessages.length; i++) {
+        setTimeout(() => {
+          this.ws.send(
+            JSON.stringify({
+              from: this.state.name,
+              message: offlineMessages[i],
+            })
+          );
+        }, 2000);
+      }
+    }
+  }
+
+  scrollToBottom() {
     const messageContainer = document.querySelector('.message-container');
     messageContainer.scrollTop = messageContainer.scrollHeight;
   }
@@ -84,7 +93,7 @@ class Chat extends Component {
     }
   }
 
-  handleSubmit(name) {
+  handleLoginSubmit(name) {
     this.ls.setItem('nickname', name);
 
     this.setState({ name: this.ls.getItem('nickname') });
@@ -98,7 +107,8 @@ class Chat extends Component {
         style={this.state.offline ? { opacity: '0.8' } : { opacity: '1' }}
         className="chat-container"
       >
-        <Login handleSubmit={this.handleSubmit} />
+        <Login handleSubmit={this.handleLoginSubmit} />
+
         <ul className="message-container">
           {messages.map(answer => {
             const { from, time, id, message } = answer;
@@ -113,6 +123,7 @@ class Chat extends Component {
             );
           })}
         </ul>
+        
         <Input offline={this.state.offline} sendMessage={this.sendMessage} />
       </div>
     );
