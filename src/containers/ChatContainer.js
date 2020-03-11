@@ -3,8 +3,7 @@ import { sendMessage, receiveMessages, clearOfflineMessages } from '../actions/i
 import Chat from '../components/Chat';
 
 const mapStateToProps = ({ receiveMessages, sendMessages }) => {
-  console.log(receiveMessages, sendMessages);
-  return { 
+  return {
     messages: [...receiveMessages],
     offlineMessages: [...sendMessages] };
 };

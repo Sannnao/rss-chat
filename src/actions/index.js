@@ -13,8 +13,6 @@ export function clearOfflineMessages() {
 
 export function sendMessage(message) {
   return function(dispatch) {
-    console.log('off');
-
     dispatch({ type: SEND_MESSAGE, message });
   };
 }

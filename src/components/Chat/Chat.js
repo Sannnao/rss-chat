@@ -13,7 +13,7 @@ class Chat extends Component {
     super(props);
 
     this.ws = new ReconnectingWebSocket(URL, null, {
-      minReconnectionDelay: 5000,
+      minReconnectionDelay: 1000,
     });
     this.ls = window.localStorage;
 
@@ -21,6 +21,8 @@ class Chat extends Component {
       name: 'unknown monkey',
       offline: true,
     };
+
+    this.messageRef = React.createRef();
 
     this.sendMessage = this.sendMessage.bind(this);
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
@@ -64,7 +66,6 @@ class Chat extends Component {
 
     this.ls.removeItem('offMessages');
     this.props.clearOfflineMessages();
-    console.log(this.props.offlineMessages);
 
     if (offlineMessages) {
       for (let i = 0; i < offlineMessages.length; i++) {
@@ -81,8 +82,7 @@ class Chat extends Component {
   }
 
   scrollToBottom() {
-    const messageContainer = document.querySelector('.message-container');
-    messageContainer.scrollTop = messageContainer.scrollHeight;
+    this.messageRef.current.scrollTop = this.messageRef.current.scrollHeight;
   }
 
   sendMessage(message) {
@@ -109,7 +109,7 @@ class Chat extends Component {
       >
         <Login handleSubmit={this.handleLoginSubmit} />
 
-        <ul className="message-container">
+        <ul className="message-container" ref={this.messageRef}>
           {messages.map(answer => {
             const { from, time, id, message } = answer;
             return (
@@ -123,7 +123,7 @@ class Chat extends Component {
             );
           })}
         </ul>
-        
+
         <Input offline={this.state.offline} sendMessage={this.sendMessage} />
       </div>
     );

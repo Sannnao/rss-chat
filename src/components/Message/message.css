@@ -12,14 +12,14 @@
 .message-header {
   display: flex;
   justify-content: space-between;
-  align-items: center; 
+  align-items: center;
   width: 100%;
 }
 
 .message-name {
   width: 70%;
   word-wrap: break-word;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -28,7 +28,7 @@
 }
 
 .message {
-  margin: 5px 0; 
+  margin: 5px 0;
   word-wrap: break-word;
 }
 
