@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import './input.css';
 
 const keyCodeEnter = 13;
 
@@ -34,7 +35,7 @@ class Input extends Component {
           className="input-field"
           onChange={this.handleInput}
           value={this.state.input}
-          placeholder={this.props.offline 
+          placeholder={this.props.offline
             ? "Chat is offline but you can send messages..."
             : "Enter a message..."}
         />

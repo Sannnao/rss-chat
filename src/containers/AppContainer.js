@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { sendMessage, receiveMessages, clearOfflineMessages } from '../actions/index';
-import Chat from '../components/Chat';
+import App from '../App';
 
 const mapStateToProps = ({ receiveMessages, sendMessages }) => {
   return {
@@ -19,6 +19,6 @@ const mapDispatchToProps = dispatch => {
 const ChatContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Chat);
+)(App);
 
 export default ChatContainer;
