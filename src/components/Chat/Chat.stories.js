@@ -1,6 +1,6 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, object, boolean, text } from '@storybook/addon-knobs';
+import { withKnobs, object, boolean } from '@storybook/addon-knobs';
 import Chat from '.';
 
 export default {
@@ -28,38 +28,38 @@ export const Default = () => (
 	  offline={boolean('Is Chat Offline', false)}
     messages={object('Messages', [
       {
-				id: Math.floor(Math.random() * 1e6),
-        time: new Date(),
+				id: 1,
+        time: new Date(2020, 3, 27, 18, 0, 0),
         from: 'Sasha',
         message: 'Hello, World!',
       },
       {
-				id: Math.floor(Math.random() * 1e6),
-        time: new Date(),
+				id: 2,
+        time: new Date(2020, 3, 27, 18, 0, 0),
         from: 'Sasha',
         message: 'Hello, World!',
       },
       {
-				id: Math.floor(Math.random() * 1e6),
-        time: new Date(),
+				id: 3,
+        time: new Date(2020, 3, 27, 18, 0, 0),
         from: 'unknown monkey',
         message: 'Hello, World!',
       },
 			{
-				id: Math.floor(Math.random() * 1e6),
-        time: new Date(),
+				id: 4,
+        time: new Date(2020, 3, 27, 18, 0, 0),
         from: 'Sasha',
         message: 'Hello, World!',
       },
       {
-				id: Math.floor(Math.random() * 1e6),
-        time: new Date(),
+				id: 5,
+        time: new Date(2020, 3, 27, 18, 0, 0),
         from: 'Sasha',
         message: 'Hello, World!',
       },
       {
-				id: Math.floor(Math.random() * 1e6),
-        time: new Date(),
+				id: 6,
+        time: new Date(2020, 3, 27, 18, 0, 0),
         from: 'unknown monkey',
         message: 'Hello, World!',
       }

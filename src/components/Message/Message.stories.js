@@ -25,7 +25,7 @@ export default {
 
 export const Default = () => (
   <Message
-    time={date('Message time', new Date())}
+    time={date('Message time', new Date(2020, 3, 27, 18, 0, 0))}
     name={text('Name', 'Sasha')}
     message={text('Message', 'Hello, World!')}
     isYourMessage={boolean('IsYourMessage?', true)}
