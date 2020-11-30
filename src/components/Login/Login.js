@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { setName } from '../../actions';
 import './login.css';
 
-const Login = () => {
+export const Login = () => {
   const [input, setInput] = useState('');
   const dispatch = useDispatch()
 
@@ -36,5 +36,3 @@ const Login = () => {
       </form>
     );
 }
-
-export default Login;

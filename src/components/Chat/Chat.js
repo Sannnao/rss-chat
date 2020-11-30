@@ -2,11 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import './chat.css';
 
-import Message from '../Message/';
-import Input from '../Input';
-import Login from '../Login';
+import { Message, Input, Login } from '..';
 
-const Chat = () => {
+export const Chat = () => {
   const messages = useSelector((state) => state.receiveMessages);
   const isOnline = useSelector((state) => state.isOnline);
   const messageRef = useRef();
@@ -30,10 +28,7 @@ const Chat = () => {
         {messages.map((answer) => {
           const { id, ...messageData } = answer;
 
-          return <Message
-            key={id}
-            messageData={messageData}
-          />;
+          return <Message key={id} messageData={messageData} />;
         })}
       </ul>
 
@@ -41,5 +36,3 @@ const Chat = () => {
     </div>
   );
 };
-
-export default Chat;
