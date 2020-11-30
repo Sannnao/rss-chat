@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import './message.css';
 
-const Message = ({ messageData: { time, from, message }}) => {
+export const Message = ({ messageData: { time, from, message }}) => {
   const name = useSelector((state) => state.name);
 
   const messageTime = new Date(time)
@@ -24,5 +25,3 @@ const Message = ({ messageData: { time, from, message }}) => {
     </li>
   );
 };
-
-export default Message;

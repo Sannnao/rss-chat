@@ -4,7 +4,7 @@ import { WebsocketContext } from './context/websocketContext';
 import { initialLoading } from './actions';
 import './App.css';
 
-import Chat from './components/Chat';
+import { Chat } from './components';
 
 import ReconnectingWebSocket from 'reconnecting-websocket';
 const URL = 'wss://wssproxy.herokuapp.com/';

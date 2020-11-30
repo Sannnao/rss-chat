@@ -1,7 +1,7 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, object, boolean } from '@storybook/addon-knobs';
-import Chat from '.';
+import { Chat } from '..';
 
 export default {
   title: 'Chat',
