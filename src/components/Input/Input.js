@@ -1,48 +1,45 @@
-import React, { Component } from "react";
+import React, { useState, useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { WebsocketContext } from '../../context/websocketContext';
+import { sendMessage } from '../../actions';
 import './input.css';
 
-const keyCodeEnter = 13;
+const Input = () => {
+  const [input, setInput] = useState('');
+  const ws = useContext(WebsocketContext);
+  const name = useSelector(state => state.name);
+  const isOnline = useSelector((state) => state.isOnline);
+  const dispatch = useDispatch();
 
-class Input extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      input: ''
-    };
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleInput = this.handleInput.bind(this);
-  }
-
-  handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    // if (!this.state.input) return;
+    // if (!input) return;
 
-    this.props.sendMessage(this.state.input);
-    this.setState({input: ''});
-  }
+    dispatch(sendMessage(ws, name, input));
+    setInput('');
+  };
 
-  handleInput(e) {
-    this.setState({ input: e.target.value });
-  }
+  const handleInput = (e) => {
+    setInput(e.target.value);
+  };
 
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit} className="input-container">
-        <input
-          onKeyPress={(e) => e.keyCode === keyCodeEnter && this.handleSubmit}
-          className="input-field"
-          onChange={this.handleInput}
-          value={this.state.input}
-          placeholder={this.props.offline
-            ? "Chat is offline but you can send messages..."
-            : "Enter a message..."}
-        />
-        <button className="submit-button" type="submit">Send</button>
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={handleSubmit} className="input-container">
+      <input
+        className="input-field"
+        onChange={handleInput}
+        value={input}
+        placeholder={
+          isOnline
+            ? 'Enter a message...'
+            : 'Chat is offline but you can send messages...'
+        }
+      />
+      <button className="submit-button" type="submit">
+        Send
+      </button>
+    </form>
+  );
+};
 
 export default Input;
