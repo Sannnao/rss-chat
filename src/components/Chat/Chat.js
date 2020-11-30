@@ -24,7 +24,7 @@ class Chat extends Component {
         style={offline ? { opacity: '0.8' } : { opacity: '1' }}
         className="chat-container"
       >
-        <Login handleSubmit={handleLoginSubmit} />
+        <Login handleLoginSubmit={handleLoginSubmit} />
 
         <ul className="message-container" ref={this.messageRef}>
           {messages.map(answer => {

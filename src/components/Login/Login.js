@@ -1,40 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './login.css';
 
-const keyCodeEnter = 13;
+const Login = ({ handleLoginSubmit }) => {
+  const [input, setInput] = useState('');
 
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
+  const handleLogin = (e) => {
+    setInput(e.target.value);
+  };
 
-    this.state = {
-      input: '',
-    };
-
-    this.handleLogin = this.handleLogin.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleLogin(e) {
-    this.setState({ input: e.target.value });
-  }
-
-  handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!this.state.input) return;
+    if (!input) return;
 
-    this.props.handleSubmit(this.state.input);
-    this.setState({ input: '' });
-  }
+    handleLoginSubmit(input);
+    setInput('');
+  };
 
-  render() {
+
     return (
-      <form className="login-container" onSubmit={this.handleSubmit}>
+      <form className="login-container" onSubmit={handleSubmit}>
         <input
-          onKeyPress={e => e.keyCode === keyCodeEnter && this.handleSubmit}
           className="login-input"
-          onChange={this.handleLogin}
-          value={this.state.input}
+          onChange={handleLogin}
+          value={input}
           placeholder="Enter your name..."
         />
         <button className="login-button" type="submit">
@@ -42,7 +30,6 @@ class Login extends React.Component {
         </button>
       </form>
     );
-  }
 }
 
 export default Login;
