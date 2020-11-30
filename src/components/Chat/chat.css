@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   width: 80%;
-  height: 80vh;
+  height: 80%;
   padding-bottom: 60px;
   background-color: rgba(255, 255, 255, 0.4);
   box-shadow: 0 0 5px 0 gray;
@@ -22,21 +22,21 @@
 @media screen and (min-width: 320px) {
   .chat-container {
     width: 90%;
-    height: 90vh;
+    height: 90%;
   }
 }
 
 @media screen and (min-width: 768px) {
   .chat-container {
     width: 75%;
-    height: 90vh;
+    height: 90%;
   }
 }
 
 @media screen and (min-width: 1024px) {
   .chat-container {
     width: 70%;
-    height: 90vh;
+    height: 90%;
   }
 }
 
