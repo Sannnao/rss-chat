@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { initialLoading } from './actions';
 import './App.css';
 
 import Chat from './components/Chat';
@@ -7,102 +9,84 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 
 const URL = 'wss://wssproxy.herokuapp.com/';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
+const App = () => {
+  const [name, setName] = useState('unknown monkey');
+  const messages = useSelector(state => state.receiveMessages);
+  const isOnline = useSelector(state => state.isOnline);
+  const dispatch = useDispatch();
 
-    this.ws = new ReconnectingWebSocket(URL, null, {
+  useEffect(() => {
+    const ws = new ReconnectingWebSocket(URL, null, {
       minReconnectionDelay: 1000,
     });
-    this.ls = window.localStorage;
 
-    this.state = {
-      name: 'unknown monkey',
-      offline: true,
-    };
+    dispatch(initialLoading(ws));
 
-    this.sendMessage = this.sendMessage.bind(this);
-    this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
-  }
+    // this.handleOfflineMessages();
 
-  componentDidMount() {
-    this.props.receiveMessages();
+    // window.onbeforeunload = () => {
+    //   this.ls.setItem(
+    //     'offMessages',
+    //     JSON.stringify(this.props.offlineMessages)
+    //   );
+    // };
+  }, []);
 
-    this.ws.addEventListener('open', () => {
-      this.handleOfflineMessages();
+  useEffect(() => {
+    const savedUser = localStorage.getItem('nickname');
 
-      console.log('open');
-      this.setState({ offline: false });
-    });
-
-    this.ws.addEventListener('close', () => {
-      console.log('Socket is closed. Reconnect will be attempted soon...');
-      this.setState({ offline: true });
-    });
-
-    window.onbeforeunload = () => {
-      this.ls.setItem(
-        'offMessages',
-        JSON.stringify(this.props.offlineMessages)
-      );
-    };
-
-    if (this.ls.getItem('nickname')) {
-      this.setState({ name: this.ls.getItem('nickname') });
+    if (savedUser) {
+      setName(savedUser);
     }
-  }
+  }, []);
 
-  handleOfflineMessages() {
-    const offlineMessages = this.props.offlineMessages.length
-      ? this.props.offlineMessages
-      : JSON.parse(this.ls.getItem('offMessages'));
+  // handleOfflineMessages() {
+  //   const offlineMessages = this.props.offlineMessages.length
+  //     ? this.props.offlineMessages
+  //     : JSON.parse(this.ls.getItem('offMessages'));
 
-    this.ls.removeItem('offMessages');
-    this.props.clearOfflineMessages();
+  //   this.ls.removeItem('offMessages');
+  //   this.props.clearOfflineMessages();
 
-    if (offlineMessages) {
-      for (let i = 0; i < offlineMessages.length; i++) {
-        setTimeout(() => {
-          this.ws.send(
-            JSON.stringify({
-              from: this.state.name,
-              message: offlineMessages[i],
-            })
-          );
-        }, 2000);
-      }
-    }
-  }
+  //   if (offlineMessages) {
+  //     for (let i = 0; i < offlineMessages.length; i++) {
+  //       setTimeout(() => {
+  //         this.ws.send(
+  //           JSON.stringify({
+  //             from: this.state.name,
+  //             message: offlineMessages[i],
+  //           })
+  //         );
+  //       }, 2000);
+  //     }
+  //   }
+  // }
 
-  sendMessage(message) {
+  const sendMessage = (message) => {
     if (this.ws.readyState === 1) {
       this.ws.send(JSON.stringify({ from: this.state.name, message: message }));
     } else if (this.ws.readyState === 3) {
       this.props.sendMessage(message);
     }
-  }
+  };
 
-  handleLoginSubmit(name) {
+  const handleLoginSubmit = (name) => {
     this.ls.setItem('nickname', name);
 
     this.setState({ name: this.ls.getItem('nickname') });
-  }
+  };
 
-  render() {
-    const { messages } = this.props;
-
-    return (
-      <div className="app-container">
-        <Chat
-				  name={this.state.name}
-          messages={messages}
-          offline={this.state.offline}
-          handleLoginSubmit={this.handleLoginSubmit}
-          sendMessage={this.sendMessage}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div className="app-container">
+      <Chat
+        name={name}
+        messages={messages}
+        offline={!isOnline}
+        handleLoginSubmit={handleLoginSubmit}
+        sendMessage={sendMessage}
+      />
+    </div>
+  );
+};
 
 export default App;
