@@ -4,7 +4,7 @@ import { WebsocketContext } from '../../context/websocketContext';
 import { sendMessage } from '../../actions';
 import './input.css';
 
-const Input = () => {
+export const Input = () => {
   const [input, setInput] = useState('');
   const ws = useContext(WebsocketContext);
   const name = useSelector(state => state.name);
@@ -13,7 +13,7 @@ const Input = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // if (!input) return;
+    if (!input) return;
 
     dispatch(sendMessage(ws, name, input));
     setInput('');
@@ -41,5 +41,3 @@ const Input = () => {
     </form>
   );
 };
-
-export default Input;
