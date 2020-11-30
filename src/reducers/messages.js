@@ -3,8 +3,9 @@ import {
   CLEAR_OFFLINE_MESSAGES,
   RECEIVE_MESSAGES,
   RECEIVE_MESSAGE,
-  SEND_MESSAGE,
+  SEND_OFFLINE_MESSAGE,
   SET_IS_ONLINE,
+  SET_NAME,
 } from '../actions/';
 
 function receiveMessages(state = [], action) {
@@ -18,9 +19,9 @@ function receiveMessages(state = [], action) {
   }
 }
 
-function sendMessages(state = [], action) {
+function offlineMessages(state = [], action) {
   switch (action.type) {
-    case SEND_MESSAGE:
+    case SEND_OFFLINE_MESSAGE:
       return [...state, action.message];
     case CLEAR_OFFLINE_MESSAGES:
       return [];
@@ -37,10 +38,19 @@ function isOnline(state = false, action) {
   return state;
 }
 
+function name(state = 'unknown monkey', action) {
+  if (action.type === SET_NAME) {
+    return action.payload;
+  }
+
+  return state;
+}
+
 const messages = combineReducers({
+  name,
   isOnline,
   receiveMessages,
-  sendMessages,
+  offlineMessages,
 })
 
 export default messages

@@ -1,52 +1,45 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import './chat.css';
 
 import Message from '../Message/';
 import Input from '../Input';
 import Login from '../Login';
 
-class Chat extends Component {
-	messageRef = React.createRef();
+const Chat = () => {
+  const messages = useSelector((state) => state.receiveMessages);
+  const isOnline = useSelector((state) => state.isOnline);
+  const messageRef = useRef();
 
-  componentDidUpdate() {
-    this.scrollToBottom();
-	}
+  useEffect(() => {
+    const scrollToBottom = () => {
+      messageRef.current.scrollTop = messageRef.current.scrollHeight;
+    };
 
-  scrollToBottom() {
-    this.messageRef.current.scrollTop = this.messageRef.current.scrollHeight;
-  }
+    scrollToBottom();
+  }, [messages]);
 
-  render() {
-		const { messages, sendMessage, handleLoginSubmit, offline, name } = this.props;
+  return (
+    <div
+      style={isOnline ? { opacity: '1' } : { opacity: '0.8' }}
+      className="chat-container"
+    >
+      <Login />
 
-    return (
-      <div
-        style={offline ? { opacity: '0.8' } : { opacity: '1' }}
-        className="chat-container"
-      >
-        <Login handleLoginSubmit={handleLoginSubmit} />
+      <ul className="message-container" ref={messageRef}>
+        {messages.map((answer) => {
+          const { id, ...messageData } = answer;
 
-        <ul className="message-container" ref={this.messageRef}>
-          {messages.map(answer => {
-            const { from, time, id, message } = answer;
-						const isYourMessage = from === name;
+          return <Message
+            key={id}
+            messageData={messageData}
+          />;
+        })}
+      </ul>
 
-            return (
-              <Message
-                isYourMessage={isYourMessage}
-                key={id}
-                name={from}
-                time={time}
-                message={message}
-              />
-            );
-          })}
-        </ul>
-
-        <Input offline={offline} sendMessage={sendMessage} />
-      </div>
-    );
-  }
-}
+      <Input />
+    </div>
+  );
+};
 
 export default Chat;
