@@ -1,29 +1,44 @@
-import ReconnectingWebSocket from 'reconnecting-websocket';
-
+export const INITIAL_LOADING = 'INITIAL_LOADING';
 export const CLEAR_OFFLINE_MESSAGES = 'CLEAR_OFFLINE_MESSAGES';
 export const RECEIVE_MESSAGES = 'RECEIVE_MESSAGES';
 export const RECEIVE_MESSAGE = 'RECEIVE_MESSAGE';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
+export const SET_IS_ONLINE = 'SET_IS_ONLINE';
 
-const URL = 'wss://wssproxy.herokuapp.com/';
+export const initialLoading = (ws) => {
+  return (dispatch) => {
+    ws.addEventListener('open', () => {
+      console.log('open');
+
+      dispatch(setIsOnline(true));
+      dispatch(receiveMessages(ws));
+    });
+
+    ws.addEventListener('close', () => {
+      console.log('Socket is closed. Reconnect will be attempted soon...');
+
+      dispatch(setIsOnline(false));
+    });
+  }
+}
+
+export function setIsOnline(isOnline) {
+  return { type: SET_IS_ONLINE, payload: isOnline };
+}
 
 export function clearOfflineMessages() {
   return { type: CLEAR_OFFLINE_MESSAGES };
 }
 
 export function sendMessage(message) {
-  return function(dispatch) {
+  return function (dispatch) {
     dispatch({ type: SEND_MESSAGE, message });
   };
 }
 
-export function receiveMessages() {
-  return function(dispatch) {
-    const ws = new ReconnectingWebSocket(URL, null, {
-      minReconnectionDelay: 5000,
-    });
-
-    ws.addEventListener('message', e => {
+export function receiveMessages(ws) {
+  return function (dispatch) {
+    ws.addEventListener('message', (e) => {
       const receivedData = JSON.parse(e.data);
 
       if (receivedData.length !== 1) {
@@ -31,25 +46,21 @@ export function receiveMessages() {
 
         dispatch({ type: RECEIVE_MESSAGES, messages });
       } else {
-        const message = receivedData;
+        const { from, message } = receivedData[0];
 
-        Notification.requestPermission(permission => {
-          if (permission === 'granted') {
-            if (document.hidden) {
-              const name = message[0].from;
-              const messageContent = message[0].message;
+        Notification.requestPermission((permission) => {
+          if (permission === 'granted' && document.hidden) {
 
-              const notifyOptions = {
-                body: `${name}`,
-                silent: true,
-              };
+            const notifyOptions = {
+              body: `${from}`,
+              silent: true,
+            };
 
-              new Notification(`${messageContent}:`, notifyOptions);
-            }
+            new Notification(`${message}:`, notifyOptions);
           }
         });
 
-        dispatch({ type: RECEIVE_MESSAGE, message });
+        dispatch({ type: RECEIVE_MESSAGE, message: receivedData });
       }
     });
   };
