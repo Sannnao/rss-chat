@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setName } from '../../actions';
 import './login.css';
 
-const Login = ({ handleLoginSubmit }) => {
+const Login = () => {
   const [input, setInput] = useState('');
+  const dispatch = useDispatch()
 
   const handleLogin = (e) => {
     setInput(e.target.value);
@@ -12,7 +15,9 @@ const Login = ({ handleLoginSubmit }) => {
     e.preventDefault();
     if (!input) return;
 
-    handleLoginSubmit(input);
+    localStorage.setItem('nickname', input);
+
+    dispatch(setName(input));
     setInput('');
   };
 
