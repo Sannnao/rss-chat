@@ -1,5 +1,11 @@
 import { combineReducers } from 'redux';
-import { CLEAR_OFFLINE_MESSAGES, RECEIVE_MESSAGES, RECEIVE_MESSAGE, SEND_MESSAGE } from '../actions/';
+import {
+  CLEAR_OFFLINE_MESSAGES,
+  RECEIVE_MESSAGES,
+  RECEIVE_MESSAGE,
+  SEND_MESSAGE,
+  SET_IS_ONLINE,
+} from '../actions/';
 
 function receiveMessages(state = [], action) {
   switch (action.type) {
@@ -23,7 +29,16 @@ function sendMessages(state = [], action) {
   }
 }
 
+function isOnline(state = false, action) {
+  if (action.type === SET_IS_ONLINE) {
+    return action.payload;
+  }
+
+  return state;
+}
+
 const messages = combineReducers({
+  isOnline,
   receiveMessages,
   sendMessages,
 })
